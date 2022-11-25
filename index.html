@@ -15,13 +15,13 @@
 
     <h1 class="text-center">Distributeur de tickets !</h1>
 
-<div class="container row d-flex justify-content-between align-items-center mt-5 mb-4 flex-wrap ">
+    <div class="container row d-flex justify-content-between align-items-center mt-5 mb-4 flex-wrap ">
         <div class="col-1">
             <select class="form-select form-select-sm " aria-label=".form-select-sm example">
-            <option selected>Nom</option>
-            <option value="1"></option>
-            <option value="2"></option>
-            <option value="3"></option>
+                <option selected>Nom</option>
+                <option value="1"></option>
+                <option value="2"></option>
+                <option value="3"></option>
             </select>
         </div>
         <div class="col-2 text-end">
@@ -29,16 +29,16 @@
                 <label class="form-label">Description du ticket</label>
         </div>
         <div class="col">
-                <input class="form-control form-control-sm" type="text" aria-label=".form-control-sm example" />
+            <input class="form-control form-control-sm" type="text" aria-label=".form-control-sm example" />
         </div>
         </form>
  
             <div class="col-2 text-end">
                 <button type="button" class="btn btn-outline-primary">
                 J'ai besoin d'aide ☝
-                </button>
-            </div>
-</div>
+            </button>
+        </div>
+    </div>
 
     <h2 class="text-center">Liste des apprenant.e.s</h2>
 
@@ -48,15 +48,17 @@
         </button>
     </div>
 
-    <div class="mt-5">
-        <table id="tableauId" class="table table-dark table-striped">
+    <div class="mt-5 container">
+        <table id="tableauId" class="table table-dark table-striped text-center">
             <tr>
-                <th>ID du ticket</th>
-                <th>Nom</th>
-                <th>Description</th>
-                <th>Passer mon tour</th>
+                <th scope="col">ID du ticket</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Description</th>
+                <th scope="col">Passer mon tour</th>
             </tr>
-        </table>
+        <tbody id="tBod">
+        </tbody>
+        </table>    
     </div>
 
 </body>
