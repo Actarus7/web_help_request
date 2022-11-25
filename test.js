@@ -3,9 +3,22 @@ function printUserInfos(url) {
         .then(response => response.json())
         .then(function (data) {
             arrayData = data.data,//console.log(arrayData)})//
-                postTicket(arrayData) //tableau avec userId et name
+                 //tableau avec userId et name
+                userList(arrayData);
+                postTicket(arrayData); // en attente du eventlistner
         })
 }
+
+
+
+function userList (arrayData) {
+    for (let i = 0; i < arrayData.length; i++) {
+        const userName = document.getElementById('selectUser');
+        const nextOption = document.createElement('option');
+        userName.appendChild(nextOption);
+        nextOption.textContent = arrayData[i].username;
+
+}};
 
 function postTicket(tableauUsers) {
     ;
