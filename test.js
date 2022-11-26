@@ -14,27 +14,45 @@ let Ticket = class {
     }
 };
 
-/* // Nouvel objet à priori useless grâce à la fonction regroupInfos qui modifie la 'table tickets'
-let UserTicket = class {
-    constructor(done, key, subject, users_id, username) {
-        this.done = done;
-        this.key = key;
-        this.subject = subject;
-        this.users_id = users_id;
-        this.username = username;
-    }
-}; */
+// LIAISONS HTML
+const buttnAuSuivant = document.getElementById('buttnNext');
+const chooseName = document.getElementById('selectUser');
+const click = document.getElementById('clickTick');
+const sub = document.getElementById('subTick');
 
-
-
-// CONSTRUCTION DE LA SELECTION DES USERS DANS LE MENU DEROULANT
-/* const selectUser = document.getElementById();
-selectUser.addEventListener('click' => () {}) */
-
-
-
+// TABLEAUX
 let tableUsers = [];
 let tableTickets = [];
+let keys = [];
+
+// EVENTLISTENERS
+buttnAuSuivant.addEventListener('click', () => auSuivant());
+click.addEventListener("click", () => {
+    const requestUser = document.getElementById("userTick");
+    let userTicket = requestUser.value;
+    //console.log(userTicket, keys[keys.length-1]);
+    postTicket(userTicket, keys[keys.length - 1]);
+});
+sub.addEventListener("submit", () => {
+    const requestUser = document.getElementById("userTick");
+    let userTicket = requestUser.value;
+    //console.log(userTicket, keys[keys.length-1]);
+    postTicket(userTicket, keys[keys.length - 1]);
+});
+// Click qui sélectionne le user 
+// Crée une const avec le name
+// Lance la fonction getId (qui associe le name au users_id (key))
+// Push le users_id (key) dans un tableau 'keys' à l'extérieur
+chooseName.addEventListener("input", (e) => {
+    const who = e.target[e.target.selectedIndex].label;
+    const userKey = getId(who);
+    keys.push(userKey)
+    //console.log(keys)
+});
+
+
+
+//FONCTIONS
 
 // Récupère les données userId et username dans le GET users
 // et les push dans le 'tableUsers'
@@ -48,33 +66,41 @@ fetch("https://webhelprequest.deta.dev/users")
             tableUsers.push(user)
             //console.log(user)
         }
-    })
-
-console.log(tableUsers);
+    });
+//console.log(tableUsers);
 
 
 // Récupère les données done, key, subject et users_id dans le GET tickets
 // et les push dans le 'tableTickets'
 // lance la fonction regroupTicketsUsers (qui permet d'ajouter le username dans 'table tickets')
 // lance la fonction CreateElements (qui permet de créer les lignes et cellules en fonction de 'table tickets' à jour)
-fetch("https://webhelprequest.deta.dev/tickets")
-    .then(response => response.json())
-    .then(function (data) {
-        ticketsData = data.data;
-        //console.log(ticketsData);
-        for (let i = 0; i < ticketsData.length; i++) {
-            let ticket = new Ticket(ticketsData[i].done, ticketsData[i].key, ticketsData[i].subject, ticketsData[i].users_id);
-            tableTickets.push(ticket);
+function afficherTickets() {
+    fetch("https://webhelprequest.deta.dev/tickets")
+        .then(response => response.json())
+        .then(function (data) {
+            ticketsData = data.data;
+            //console.log(ticketsData);
+            for (let i = 0; i < ticketsData.length; i++) {
+                if (ticketsData[i].done === 0) {
+                    let ticket = new Ticket(ticketsData[i].done, ticketsData[i].key, ticketsData[i].subject, ticketsData[i].users_id);
+                    tableTickets.push(ticket);
+                }
+                //console.log(tableTickets);
+            };
             //console.log(tableTickets);
-        }
-        regroupTicketsUsers(tableTickets, tableUsers);
-        createAffichageTableTickets(tableTickets);
-        createUsersList(tableUsers);
-        //console.log(ticket);
-    });
-console.log(tableTickets)
+            regroupTicketsUsers(tableTickets, tableUsers);
+            createAffichageTableTickets(tableTickets);
+            createUsersList(tableUsers);
+            //console.log(ticket);
+        });
+};
 
-// Fonction qui crée les lignes et cellules du tableau avec les infos contenues dans l'API (done, key, subject, users_id)
+// Permet d'afficher les tickets au lancement de la page
+afficherTickets()
+//console.log(tableTickets)
+
+
+// Crée les lignes et cellules du tableau avec les infos contenues dans l'API (done, key, subject, users_id)
 // Affiche les données dans les cellules créées
 function createAffichageTableTickets(tableTickets) {
     for (let i = 0; i < tableTickets.length; i++) {
@@ -97,9 +123,14 @@ function createAffichageTableTickets(tableTickets) {
         buttonN.setAttribute("type", "button");
         buttonN.setAttribute("class", "btn btn-primary");
         buttonN.setAttribute("id", `buttn${i}`);
+        //buttonN.setAttribute('onclick', "window.location.reload()" )
+        document.getElementById(`buttn${i}`).addEventListener('click', () => disableTickets(tableTickets[i].key))
     }
 };
 
+
+
+// Crée la liste des noms dans le sélecteur
 function createUsersList(tableUsers) {
     for (let i = 0; i < tableUsers.length; i++) {
         const userName = document.getElementById("selectUser");
@@ -107,7 +138,7 @@ function createUsersList(tableUsers) {
         userName.appendChild(nextOption);
         nextOption.textContent = tableUsers[i].username;
     }
-}
+};
 
 
 // Ajoute une nouvelle clé (username) dans la 'tableTickets'
@@ -132,21 +163,23 @@ function regroupTicketsUsers(tableTickets, tableUsers) {
 };
 
 
-// FONCTIONNEL EN ATTENTE
 
-/* // Fonction pour disable un ticket
+// Disable un ticket
 // Ajouter entre le ${} l'id du ticket à disable (qui sera pointé par le 'click' de l'eventListener)
-function disableTickets() {
-    fetch(`https://webhelprequest.deta.dev/tickets/${}`, {
+// Lance la fonction setTimeout (qui refresh la page après le disableTicket)
+function disableTickets(ticketKey) {
+    fetch(`https://webhelprequest.deta.dev/tickets/${ticketKey}`, {
         "method": "PATCH",
         "body": new URLSearchParams({})
-    })
+    });
+    setTimeout(() => {
+        document.location.reload();
+    }, 1000);; // Refresh la page après 1 seconde (pour laisser le temps à l'API de répondre)
 };
-disableTickets(); */
 
-const buttnAuSuivant = document.getElementById('buttnNext');
-buttnAuSuivant.addEventListener('click', () => auSuivant());
-// Fonction qui permet d'afficher une window alert avec le nom et le sujet du 1er ticket de la liste
+
+
+// Permet d'afficher une window alert avec le nom et le sujet du 1er ticket de la liste
 function auSuivant() {
     const name = tableTickets[0].username;
     const sujet = tableTickets[0].subject;
@@ -157,15 +190,30 @@ function auSuivant() {
 
 
 
-// A FAIRE PAS ENCORE TESTE
-// MAIS FONCTIONNEL AVEC L'ANCIEN
-// Y AJOUTER UNE FONCTION QUI PERMET LE REAFFICHAGE DES TICKETS DE L'API
-/* const formData = {
-    subject: "Test 50", //récupérer l'input à partir de l'eventListener
-    userId: tableauUsers[0].key, //id correspondant à l'eventListener du clic - faire le lien entre le name et le userId
+// Associe le name au users_id (key)
+function getId(who) {
+    for (i = 0; i < tableUsers.length; i++) {
+        if (who === tableUsers[i].username) {
+            let userKey = tableUsers[i].key;
+            //console.log(userKey);
+            return userKey;
+        }
+    }
 };
-fetch("https://webhelprequest.deta.dev/tickets", {
-    "method": "POST",
-    "body": new URLSearchParams(formData),
-    "headers": { "Content-Type": "application/x-www-form-urlencoded" }
-}) */
+
+
+
+// Poste un ticket 
+// Relance la fonction d'affichage des tickets (refresh de la page)
+function postTicket(sujet, idUser) {
+    const formData = {
+        subject: sujet, //récupérer l'input à partir de l'eventListener
+        userId: idUser, //id correspondant à l'eventListener du clic - faire le lien entre le name et le userId
+    };
+    fetch("https://webhelprequest.deta.dev/tickets", {
+        "method": "POST",
+        "body": new URLSearchParams(formData),
+        "headers": { "Content-Type": "application/x-www-form-urlencoded" }
+    });
+    afficherTickets();
+};
