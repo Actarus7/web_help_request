@@ -217,3 +217,50 @@ function postTicket(sujet, idUser) {
     });
     afficherTickets();
 };
+
+
+
+
+
+/* // BONUS STATS NON ACHEVE :(
+letCountUser1 = 0;
+letCountUser2 = 0;
+letCountUser3 = 0;
+letCountUser4 = 0;
+letCountUser5 = 0;
+letCountUserOther = 0;
+
+function stats(tableUsers) {
+    let usersID = [];
+    fetch("https://webhelprequest.deta.dev/tickets")
+        .then(response => response.json())
+        .then(function (data) {
+            ticketsData = data.data;
+            for (let i = 0; i < ticketsData.length; i++) {
+                usersID.push(ticketsData[i].users_id)
+            }
+            console.log(usersID);
+            for (let i = 0; i < usersID.length; i++) {      // Démarrer une nouvelle fonction ...
+                if (i === tableUsers[0].username) {
+                    ++letCountUser1;
+                }
+                else if (i === tableUsers[1].username) {
+                    ++letCountUser2;
+                }
+                else if (i === tableUsers[2].username) {
+                    ++letCountUser3;
+                }
+                else if (i === tableUsers[3].username) {
+                    ++letCountUser4;
+                }
+                else if (i === tableUsers[4].username) {
+                    ++letCountUser5;
+                }
+                else {
+                    ++letCountUserOther;
+                }
+            }
+        }
+        )
+}
+stats() */
